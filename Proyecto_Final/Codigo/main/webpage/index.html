@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<script src='jquery-3.3.1.min.js'></script>
+<link rel="stylesheet" href="app.css">
+<script async src="app.js"></script>
+<title>STR 2026 — Control Ambiental</title>
+</head>
+<body>
+
+<header>
+  <h1>STR 2026</h1>
+  <p>Sistema Automatizado de Control Ambiental</p>
+</header>
+
+<section id="status-bar">
+  <div class="stat">
+    <span class="stat-icon">&#127777;</span>
+    <span class="stat-label">Temperatura</span>
+    <span id="s-temp" class="stat-value">--</span>
+  </div>
+  <div class="stat">
+    <span class="stat-icon">&#128168;</span>
+    <span class="stat-label">Ventilador</span>
+    <span id="s-fan" class="stat-value">--%</span>
+  </div>
+  <div class="stat">
+    <span class="stat-icon">&#127746;</span>
+    <span class="stat-label">Cortina</span>
+    <span id="s-servo" class="stat-value">--%</span>
+  </div>
+  <div class="stat">
+    <span class="stat-icon">&#128680;</span>
+    <span class="stat-label">Alarma</span>
+    <span id="s-alarm" class="stat-value">OK</span>
+  </div>
+</section>
+
+<div class="grid">
+
+  <div class="card">
+    <h2>Ventilador</h2>
+    <div class="tabs">
+      <button id="fan-auto" class="tab active">Automático</button>
+      <button id="fan-manual" class="tab">Manual</button>
+    </div>
+    <div id="fan-auto-controls">
+      <div class="field">
+        <label>Temp. Deseada <span id="fan-td-val">25</span>°C</label>
+        <input type="range" id="fan-td" min="15" max="40" value="25" step="0.5">
+      </div>
+      <div class="field">
+        <label>Temp. Máxima <span id="fan-tm-val">35</span>°C</label>
+        <input type="range" id="fan-tm" min="20" max="60" value="35" step="0.5">
+      </div>
+    </div>
+    <div id="fan-manual-controls" style="display:none">
+      <div class="field">
+        <label>Velocidad <span id="fan-mp-val">0</span>%</label>
+        <input type="range" id="fan-mp" min="0" max="100" value="0">
+      </div>
+    </div>
+    <button id="fan-apply" class="btn">Aplicar</button>
+  </div>
+
+  <div class="card">
+    <h2>Cortinas</h2>
+    <div class="tabs">
+      <button id="sv-auto" class="tab">Horario</button>
+      <button id="sv-manual" class="tab active">Manual</button>
+    </div>
+    <div id="sv-manual-controls">
+      <div class="field">
+        <label>Apertura <span id="sv-mp-val">0</span>%</label>
+        <input type="range" id="sv-mp" min="0" max="100" value="0">
+      </div>
+    </div>
+    <div id="sv-auto-controls" style="display:none">
+      <table id="sv-schedule">
+        <thead><tr><th>#</th><th>Hora</th><th>Min</th><th>%</th><th>Activo</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <button id="sv-apply" class="btn">Aplicar</button>
+  </div>
+
+  <div class="card">
+    <h2>Iluminación RGB</h2>
+    <div class="rgb-sliders">
+      <div class="rgb-ctl">
+        <label class="l-red">R</label>
+        <input type="range" id="rgb-r" min="0" max="255" value="0">
+        <span id="rgb-r-val" class="rgb-num">0</span>
+      </div>
+      <div class="rgb-ctl">
+        <label class="l-green">G</label>
+        <input type="range" id="rgb-g" min="0" max="255" value="0">
+        <span id="rgb-g-val" class="rgb-num">0</span>
+      </div>
+      <div class="rgb-ctl">
+        <label class="l-blue">B</label>
+        <input type="range" id="rgb-b" min="0" max="255" value="0">
+        <span id="rgb-b-val" class="rgb-num">0</span>
+      </div>
+    </div>
+    <div class="rgb-preview" id="rgb-preview"></div>
+    <div class="field">
+      <label>Brillo <span id="rgb-br-val">100</span>%</label>
+      <input type="range" id="rgb-br" min="0" max="100" value="100">
+    </div>
+    <button id="rgb-apply" class="btn">Aplicar</button>
+  </div>
+
+  <div class="card">
+    <h2>WiFi</h2>
+    <h3>Conectar a Router</h3>
+    <input type="text" id="wifi-sta-ssid" placeholder="SSID de la red">
+    <input type="password" id="wifi-sta-pass" placeholder="Contraseña">
+    <button id="wifi-sta-save" class="btn">Guardar y Reconectar</button>
+    <h3>Punto de Acceso</h3>
+    <input type="text" id="wifi-ap-ssid" placeholder="Nombre del AP">
+    <input type="password" id="wifi-ap-pass" placeholder="Contraseña">
+    <button id="wifi-ap-save" class="btn">Actualizar AP</button>
+  </div>
+
+  <div class="card">
+    <h2>Firmware</h2>
+    <label>Versión: <span id="latest_firmware">--</span></label>
+    <input type="file" id="selected_file" accept=".bin" style="display:none" onchange="getFileInfo()">
+    <div class="btn-row">
+      <button class="btn" onclick="document.getElementById('selected_file').click();">Seleccionar Archivo</button>
+      <button class="btn" onclick="updateFirmware()">Actualizar</button>
+    </div>
+    <p id="file_info"></p>
+    <p id="ota_update_status"></p>
+  </div>
+
+</div>
+
+<footer>STR 2026</footer>
+
+</body>
+</html>
